@@ -27,7 +27,7 @@
     "jsonwebtoken": "5.0.4",
     "jsts": "1.0.3",
     "mocha": "^5.2.0",
-    "mongodb": "^2.2.19",
+    "mongodb": "^2.2.36",
     "mongoose": "^5.4.7",
     "q": "1.4.1",
     "restler": "3.4.0",

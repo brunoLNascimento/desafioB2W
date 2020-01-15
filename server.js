@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const server = express()
 const consign = require('consign')
-const config = require('./app/config/config')
+const config = require('./app/config/database')
 
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(bodyParser.json())
@@ -46,6 +46,6 @@ db.on('disconnected', function() {
     console.log('MongoDB desconectado!');
 });
 
-mongoose.connect(config.db.url, config.db.options);
+mongoose.connect(config.db.uri, config.db.option);
 
 module.exports = server

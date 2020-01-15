@@ -1,0 +1,38 @@
+{
+  "name": "desafiob2w",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 30000 test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunoLNascimento/desafioB2W.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brunoLNascimento/desafioB2W/issues"
+  },
+  "homepage": "https://github.com/brunoLNascimento/desafioB2W#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "consign": "^0.1.6",
+    "express": "^4.16.4",
+    "express-load": "1.1.15",
+    "express-mongo-db": "^2.0.4",
+    "express-session": "^1.17.0",
+    "jsonwebtoken": "5.0.4",
+    "jsts": "1.0.3",
+    "mocha": "^5.2.0",
+    "mongodb": "^2.2.19",
+    "mongoose": "^5.4.7",
+    "q": "1.4.1",
+    "restler": "3.4.0",
+    "restler-q": "0.1.1",
+    "supertest": "^3.4.2",
+    "uuidv1": "^1.6.14"
+  }
+}

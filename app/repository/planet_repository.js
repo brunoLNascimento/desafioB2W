@@ -4,14 +4,6 @@ const Planet = mongoose.model('Planet');
 module.exports = class servicePlanet {
     async savePlanet(planet){
         try {
-
-            var planet = new Planet({
-                nome: planet.name,
-                clima: planet.climate,
-                terreno: planet.terrain,
-                qtdAparicoesEmFilmes: planet.films.length
-            });
-
             await planet.save(function(err, response){
                 if(err){
                     throw err

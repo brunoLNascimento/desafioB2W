@@ -15,8 +15,9 @@ exports.findPlanetByName = async function (req, res){
         }
 
         let planetsFound = await findPlanetAxios.findPlanetNameAxios(planetName.name)
-        let planet = await repository.savePlanet(planetsFound)
-        return res.status(200).send({message: "Planeta encontrado", planet: planet})
+        let planet = buildModel(planetsFound)
+        let planetSaved = await repository.savePlanet(planet)
+        return res.status(200).send({message: "Planeta encontrado", planet: planetSaved})
     } catch (error) {
         return res.status(500).send({message: error})        
     }
@@ -36,6 +37,26 @@ exports.findPlanetById = async function (req, res){
         let param = req.params
         let planets = await findPlanet(param)
         return res.status(200).send({message: "Planetas encontrados", planet: planets})
+    } catch (error) {
+        return res.status(500).send({message: error})        
+    }
+}
+
+exports.savePlanet = async function (req, res){
+    try {
+        let param = req.params
+        let foundPlanet = await findPlanet(param)
+
+        if(foundPlanet){
+            return res.status(200).send({
+                message: 'Planeta já cadastrado',
+                planet: foundPlanet
+            })
+        }
+
+        let planet = buildModel(planetsFound)
+        await repository.savePlanet(planet)
+        return res.status(200).send({message: "Planeta " +planet.nome+ " criado com sucesso!"})
     } catch (error) {
         return res.status(500).send({message: error})        
     }
@@ -69,4 +90,15 @@ async function findAllPlanet(params){
      } catch (error) {
         throw error
     }
+}
+
+function buildModel(param){
+    let planet = new Planet({
+        nome: param.name,
+        clima: param.climate,
+        terreno: param.terrain,
+        qtdAparicoesEmFilmes: param.films.length ? param.films.length: param.films
+    }); 
+    
+    return planet
 }

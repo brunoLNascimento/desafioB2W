@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Planet = mongoose.model('Planet');
 
-module.exports = class servicePlanet {
+module.exports = {
     async savePlanet(planet){
         try {
             await planet.save(function(err, response){
@@ -17,7 +17,7 @@ module.exports = class servicePlanet {
         } catch (error) {
             throw error    
         }
-    }
+    },
 
     async findPlanet(query){
         try {
@@ -31,7 +31,7 @@ module.exports = class servicePlanet {
         } catch (error) {
             return error    
         }
-    }
+    },
 
     async findAllPlanet(param){
         try {
@@ -47,4 +47,3 @@ module.exports = class servicePlanet {
         }
     }
 }
-//module.exports = { savePlanet, findPlanet, findAllPlanet }

@@ -1,6 +1,6 @@
 const findPlanetAxios = require('../service/axios_service')
-const repository_Planet = require('../repository/planet_repository')
-const  repository = new repository_Planet()
+const repository = require('../repository/planet_repository')
+const planetDto = require('../dto/planet_dto')
 
 exports.findPlanetByName = async function (req, res){
     try {
@@ -17,7 +17,10 @@ exports.findPlanetByName = async function (req, res){
         let planetsFound = await findPlanetAxios.findPlanetNameAxios(planetName.name)
         let planet = buildModel(planetsFound)
         let planetSaved = await repository.savePlanet(planet)
-        return res.status(200).send({message: "Planeta encontrado", planet: planetSaved})
+        return res.status(200).send({
+            message: "Planeta encontrado", 
+            planet: planetDto.returnDto(planetSaved)
+        })
     } catch (error) {
         return res.status(500).send({message: error})        
     }
@@ -26,7 +29,10 @@ exports.findPlanetByName = async function (req, res){
 exports.findALLPlanet = async function (req, res){
     try {
         let planets = await findAllPlanet(req.params)
-        return res.status(200).send({message: "Planetas encontrados", planet: planets})
+        return res.status(200).send(
+            {message: "Planetas encontrados", 
+            planet: planets
+        })
     } catch (error) {
         return res.status(500).send({message: error})        
     }
@@ -36,7 +42,10 @@ exports.findPlanetById = async function (req, res){
     try {
         let param = req.params
         let planets = await findPlanet(param)
-        return res.status(200).send({message: "Planetas encontrados", planet: planets})
+        return res.status(200).send({
+            message: "Planetas encontrados", 
+            planet: planetDto.returnDto(planets)
+        })
     } catch (error) {
         return res.status(500).send({message: error})        
     }
@@ -50,7 +59,7 @@ exports.savePlanet = async function (req, res){
         if(foundPlanet){
             return res.status(200).send({
                 message: 'Planeta já cadastrado',
-                planet: foundPlanet
+                planet: planetDto.returnDto(foundPlanet)
             })
         }
 

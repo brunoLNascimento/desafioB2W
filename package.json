@@ -29,6 +29,7 @@
     "mocha": "^5.2.0",
     "mongodb": "^2.2.36",
     "mongoose": "^5.4.7",
+    "mongoose-sequence": "^5.2.2",
     "q": "1.4.1",
     "restler": "3.4.0",
     "restler-q": "0.1.1",

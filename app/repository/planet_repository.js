@@ -41,8 +41,18 @@ async function findPlanet(query){
 }
 
 
-function buildDTO(){
-
+async function findAllPlanet(param){
+    try {
+        return await Planet.findAll(err, response => {
+            if(err){
+                throw err
+            }else{
+                return response
+            }
+        }).limit(param.limit).skip(param.skip)
+    } catch (error) {
+        return error    
+    }
 }
 
-module.exports = { savePlanet, findPlanet }
+module.exports = { savePlanet, findPlanet, findAllPlanet }

@@ -1,7 +1,9 @@
 module.exports.returnDto = function(param){   
-    this.nome = param.name,
-    this.clima = param.climate,
-    this.terreno = param.terrain,
-    this.qtdAparicoesEmFilmes = param.films.length ? param.films.length: param.films
+    let returnDto = {
+        nome : param.name ? param.name: param.nome,
+        clima : param.climate ? param.climate: param.clima,
+        terreno : param.terrain ? param.terrain: param.terreno,
+        qtdAparicoesEmFilmes : param.qtdAparicoesEmFilmes ? param.qtdAparicoesEmFilmes: param.films.length
+    }
+    return returnDto
 }
-

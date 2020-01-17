@@ -1,25 +1,29 @@
 const findPlanetAxios = require('../service/axios_service')
 const repository = require('../repository/planet_repository')
 const planetDto = require('../dto/planet_dto')
+const mongoose = require('mongoose')
+const Planet = mongoose.model('Planet');
 
 exports.findPlanetByName = async function (req, res){
     try {
         let planetName = req.params
-        let foundPlanet = await findPlanet(planetName)
+        let foundPlanet = await findPlanetToAxios(planetName)
 
         if(foundPlanet){
+            let planetReturn = planetDto.returnDto(foundPlanet) 
             return res.status(200).send({
                 message: 'Planeta encontrado',
-                planet: foundPlanet
+                planet: planetReturn
             })
         }
 
         let planetsFound = await findPlanetAxios.findPlanetNameAxios(planetName.name)
         let planet = buildModel(planetsFound)
         let planetSaved = await repository.savePlanet(planet)
+        let planetReturn = planetDto.returnDto(planetSaved) 
         return res.status(200).send({
             message: "Planeta encontrado", 
-            planet: planetDto.returnDto(planetSaved)
+            planet: planetReturn
         })
     } catch (error) {
         return res.status(500).send({message: error})        
@@ -34,7 +38,7 @@ exports.findALLPlanet = async function (req, res){
             planet: planets
         })
     } catch (error) {
-        return res.status(500).send({message: error})        
+        return res.status(400).send({message: error})        
     }
 }
 
@@ -42,19 +46,20 @@ exports.findPlanetById = async function (req, res){
     try {
         let param = req.params
         let planets = await findPlanet(param)
+        let planetReturn = planetDto.returnDto(planets) 
         return res.status(200).send({
-            message: "Planetas encontrados", 
-            planet: planetDto.returnDto(planets)
+            message: "Planeta encontrado", 
+            planet: planetReturn
         })
     } catch (error) {
-        return res.status(500).send({message: error})        
+        return res.status(400).send({message: error})        
     }
 }
 
 exports.savePlanet = async function (req, res){
     try {
         let param = req.params
-        let foundPlanet = await findPlanet(param)
+        let foundPlanet = await findPlaneToAxios(param)
 
         if(foundPlanet){
             return res.status(200).send({
@@ -67,21 +72,39 @@ exports.savePlanet = async function (req, res){
         await repository.savePlanet(planet)
         return res.status(200).send({message: "Planeta " +planet.nome+ " criado com sucesso!"})
     } catch (error) {
-        return res.status(500).send({message: error})        
+        return res.status(400).send({message: error})        
     }
 }
 
 async function findPlanet(planet){
     try {
         let query = {}
+        let foundPlanet = {}
 
         if(planet.name)
             query = { nome : {$regex: `.*${planet.name}.*`} }
         else
             query = { planetId : planet.idPlanet }
 
-        let foundPlanet = await repository.findPlanet(query)
-        return foundPlanet
+        return foundPlanet = await repository.findPlanet(query)
+       
+     } catch (error) {
+        throw error
+    }
+}
+
+async function findPlanetToAxios(planet){
+    try {
+        let query = {}
+        let foundPlanet = {}
+
+        if(planet.name)
+            query = { nome : {$regex: `.*${planet.name}.*`} }
+        else
+            query = { planetId : planet.idPlanet }
+
+        return foundPlanet = await repository.findPlanetAxios(query)
+       
      } catch (error) {
         throw error
     }
@@ -90,12 +113,13 @@ async function findPlanet(planet){
 async function findAllPlanet(params){
     try {
         let param = {}
-        param.page = params.page
-        param.skip = 10
-        param.limit = page * skip
+        let foundPlanet =  {}
+        
+        param.page = parseInt(params.page)
+        param.limit = 10
+        param.skip = param.page * param.limit
 
-        let foundPlanet = await repository.findAllPlanet(param)
-        return foundPlanet
+        return foundPlanet = await repository.findAllPlanet(param)
      } catch (error) {
         throw error
     }

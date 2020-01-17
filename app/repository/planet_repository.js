@@ -20,30 +20,46 @@ module.exports = {
     },
 
     async findPlanet(query){
-        try {
-            await Planet.findOne(query, (err, response) => {
-                if(err){
-                    throw "Erro ao consultar planeta: " +err
+        let found = {}
+        return await Planet.findOne(query, () => {
+            }).then( res => {
+                if(res){
+                    found = res
                 }else{
-                    return response
+                    throw 'Nenhum planeta encontrado para a sua busca!'
                 }
+            }).catch(error => {
+                throw "Erro: " +error
             })
-        } catch (error) {
-            return error    
-        }
+    },
+
+    async findPlanetAxios(query){
+        let found = {}
+        return await Planet.findOne(query, () => {
+            }).then( res => {
+                if(res){
+                  return  found = res
+                }else{
+                    return found = res
+                }
+            }).catch(retorno => {
+                throw retorno
+            })
     },
 
     async findAllPlanet(param){
-        try {
-            await Planet.findAll(err, response => {
-                if(err){
-                    throw "Erro ao consultar planeta: " +err
-                }else{
-                    return response
-                }
+        let found = {} 
+        return await Planet.find( () => {
             }).limit(param.limit).skip(param.skip)
-        } catch (error) {
-            return error    
-        }
+            .then( res => {
+                if(res.length){
+                    return found = res
+                }else{
+                    throw 'Nenhum planeta encontrado para a sua busca!'
+                }
+            }).catch(error => {
+                throw "Erro: " +error
+            })
     }
+
 }

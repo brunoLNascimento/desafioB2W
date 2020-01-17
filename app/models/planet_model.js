@@ -11,6 +11,15 @@ const planet = new Schema({
     collection: "planets"
 });
 
+planet.set('toObject', {
+    transform: function (doc, ret) {
+        ret.id = ret._id
+        delete ret._id
+        delete ret.__v
+        delete ret.id
+    }
+})
+
 planet.plugin(autoincrement, {inc_field: 'planetId'}).set('toJSON', {
     getters: true,
     virtuals: true

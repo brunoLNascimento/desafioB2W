@@ -75,11 +75,26 @@ exports.savePlanet = async function (req, res){
 exports.removePlanet = async function (req, res){
     try {
         let planet = req.params
-        await planetService.findPlanet(planet)
-        await planetService.removePlanet(planet.idPlanet)
+        await planetService.findAndRemovePlanet(planet)
         return res.status(200).send({message: "Planeta apagado com sucesso!"})
     } catch (error) {
         return res.status(400).send({message: error})        
     }
 }
-removePanet
+
+exports.updatePlanet = async function (req, res){
+    try {
+        let body = req.body
+        let planets = await planetService.findPlanet(body.planetId)
+        let planetUpdated = planetService.update(planets, body)
+        let planet = planetService.buildModel(planetUpdated)
+        await repository.updatePlanet(planet)
+        let planetReturn = planetDto.returnDto(planetUpdated.planetId, planets) 
+        return res.status(200).send({
+            message: "Planeta atualizado com sucesso", 
+            planet: planetReturn
+        })
+    } catch (error) {
+        return res.status(400).send({message: error})        
+    }
+}

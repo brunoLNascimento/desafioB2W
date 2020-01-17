@@ -12,8 +12,16 @@ module.exports = {
     },
 
     async findPlanet(query){
-        let foundPlanet = {}
         return await Planet.findOne(query, () => {
+            }).then( res => {
+                return res
+            }).catch(error => {
+                throw "Erro: " +error
+            })
+    },
+
+    async findAndRemovePlanet(query){
+        return await Planet.findOneAndRemove(query, () => {
             }).then( res => {
                 return foundPlanet = res
             }).catch(error => {
@@ -22,12 +30,11 @@ module.exports = {
     },
 
     async findAllPlanet(param){
-        let foundAllPlanet = {} 
         return await Planet.find( () => {
             }).limit(param.limit).skip(param.skip)
             .then( res => {
                 if(res.length){
-                    return foundAllPlanet = res
+                    return res
                 }else{
                     throw 'Nenhum planeta encontrado para a sua busca!'
                 }
@@ -38,6 +45,15 @@ module.exports = {
 
     async removePlanet(query){
         return await Planet.deleteOne(query, () => {
+            }).then( response => {
+                return response
+            }).catch(error => {
+                throw "Erro: " +error
+            })
+    },
+    
+    async updatePlanet(query, setUpdate){
+        return await Planet.update(query, { $set: setUpdate }, () => {
             }).then( response => {
                 return response
             }).catch(error => {

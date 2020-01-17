@@ -33,6 +33,15 @@ module.exports = {
         }
     },
 
+    async findAndRemovePlanet(planet){
+        try {
+            let query  = { planetId : planet.idPlanet }
+            return foundPlanet = await repository.findAndRemovePlanet(query)
+        } catch (error) {
+            throw error
+        }
+    },
+
     async  findAllPlanet(params){
         try {
             let param = {}
@@ -57,6 +66,25 @@ module.exports = {
         }
     },
 
+    update(update, body){
+        let queryUpdate = {}
+        if(update.nome != body.nome){
+            queryUpdate.nome = update.nome
+        }
+
+        if(update.terrain != body.terrain){
+            queryUpdate.terrain = update.terrain
+        }
+        if(update.climate != body.climate){
+            queryUpdate.climate = update.climate
+        }
+        if(update.qtdAparicoesEmFilmes != body.qtdAparicoesEmFilmes){
+            queryUpdate.qtdAparicoesEmFilmes = update.qtdAparicoesEmFilmes
+        }
+        queryUpdate.planetId = update.planetId
+        return queryUpdate
+    },
+
     buildModel(param){
         let planet = new Planet({
             nome: param.name,
@@ -67,5 +95,4 @@ module.exports = {
         
         return planet
     }
-
 }

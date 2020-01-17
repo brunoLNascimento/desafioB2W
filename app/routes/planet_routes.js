@@ -5,4 +5,5 @@ module.exports = function(server) {
 	server.get('/findAll/:page', planet.findALLPlanet)
 	server.get('/findById/:idPlanet', planet.findPlanetById)
 	server.post('/savePlanet', planet.savePlanet)
+	server.remove('/planet/:idPlanet', planet.removePlanet)
 }

@@ -34,6 +34,15 @@ module.exports = {
             }).catch(error => {
                 throw "Erro: " +error
             })
+    },
+
+    async removePlanet(query){
+        return await Planet.deleteOne(query, () => {
+            }).then( response => {
+                return response
+            }).catch(error => {
+                throw "Erro: " +error
+            })
     }
 
 }

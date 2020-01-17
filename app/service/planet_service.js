@@ -1,6 +1,7 @@
 const findPlanetAxios = require('../service/axios_service')
 const Planet = mongoose.model('Planet');
 const mongoose = require('mongoose')
+const repository = require('../repository/planet_repository')
 
 module.exports = { 
     async searchPlanetSwapi(planetName, res){
@@ -47,7 +48,16 @@ module.exports = {
         }
     },
 
-     buildModel(param){
+    async removePlanet(idPlanet){
+        try {
+            let query = { planetId : idPlanet }
+            return foundAllPlanet = await repository.removePlanet(query)
+        } catch (error) {
+            throw error
+        }
+    },
+
+    buildModel(param){
         let planet = new Planet({
             nome: param.name,
             clima: param.climate,

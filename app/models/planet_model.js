@@ -3,24 +3,21 @@ const mongoose = require('mongoose'),
     autoincrement = require('mongoose-sequence')(mongoose)
 
 const planet = new Schema({
-    nome: { type: String, required: true },    
-	clima: { type: String },
-	terreno: { type: String },
-    qtdAparicoesEmFilmes: { type: Number }
+    name: { type: String, required: true },    
+	climate: { type: String, required: true},
+	terrain: { type: String,required: true },
+    films: { type: Number, required: true }
 },{
     collection: "planets"
 });
 
-planet.set('toObject', {
-    transform: function (doc, ret) {
-        ret.id = ret._id
-        delete ret._id
-        delete ret.__v
-        delete ret.id
-    }
-})
 
 planet.plugin(autoincrement, {inc_field: 'planetId'}).set('toJSON', {
+         transform: function (doc, ret) {
+            delete ret._id
+            delete ret.__v
+            delete ret.id
+         },
     getters: true,
     virtuals: true
 });

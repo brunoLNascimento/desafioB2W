@@ -1,16 +1,15 @@
 const findPlanetAxios = require('../service/axios_service')
-const Planet = mongoose.model('Planet');
 const mongoose = require('mongoose')
+const Planet = mongoose.model('Planet');
 const repository = require('../repository/planet_repository')
 
 module.exports = { 
-    async searchPlanetSwapi(planetName, res){
+    async searchPlanetSwapi(planet){
         try {
-            let planetsFound = await findPlanetAxios.findPlanetNameAxios(planetName.name)
-            let planet = buildModel(planetsFound)
-            let planetSaved = await repository.savePlanet(planet)
-            let planetReturn = planetDto.returnDto(planetSaved) 
-            return planetReturn
+            let planetsFound = await findPlanetAxios.findPlanetNameAxios(planet.name)
+            let planetBuild = this.buildModel(planetsFound)
+            let planetSaved = await repository.savePlanet(planetBuild)
+            return planetSaved
         } catch (error) {
             throw error        
         }
@@ -22,7 +21,7 @@ module.exports = {
             let foundPlanet = {}
 
             if(planet.name)
-                query = { nome : {$regex: `.*${planet.name}.*`} }
+                query = { name : {$regex: `.*${planet.name}.*`} }
             else
                 query = { planetId : planet.idPlanet }
 
@@ -35,6 +34,7 @@ module.exports = {
 
     async findAndRemovePlanet(planet){
         try {
+            let foundPlanet = {}
             let query  = { planetId : planet.idPlanet }
             return foundPlanet = await repository.findAndRemovePlanet(query)
         } catch (error) {
@@ -87,12 +87,18 @@ module.exports = {
 
     buildModel(param){
         let planet = new Planet({
-            nome: param.name,
-            clima: param.climate,
-            terreno: param.terrain,
-            qtdAparicoesEmFilmes: param.films.length ? param.films.length: param.films
+            name: param.name,
+            climate: param.climate,
+            terrain: param.terrain,
+            films: param.films.length ? param.films.length: param.films
         }); 
         
         return planet
+    },
+
+    validateBody(body){
+        if(!body.name || !body.climate || !body.terrain || !body.films) 
+            throw res.status(400).send({message: "Todos os campos: nome, clima, terreno, qtdAparicoesEmFilmes são obrigatórios"})
+
     }
 }

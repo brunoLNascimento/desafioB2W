@@ -3,12 +3,15 @@ const Planet = mongoose.model('Planet');
 
 module.exports = {
     async savePlanet(planet){
-        return await planet.save( () => {
-            }).then( response => {
-                return response
-            }).catch( error => {
-                throw error
+        return new Promise(async (resolve, reject) =>{
+            await planet.save( (err, response) => {
+                if(err){
+                    reject(err)
+                }else{
+                    resolve(response)
+                }
             })
+        })
     },
 
     async findPlanet(query){
@@ -21,12 +24,18 @@ module.exports = {
     },
 
     async findAndRemovePlanet(query){
-        return await Planet.findOneAndRemove(query, () => {
-            }).then( res => {
-                return foundPlanet = res
-            }).catch(error => {
-                throw "Erro: " +error
+        return new Promise(async (resolve, reject) =>{
+            return await Planet.findOneAndRemove(query, (err, response) => {
+                if(err){
+                    reject(err)
+                }
+                if(response){
+                    resolve(response)
+                }else{
+                    reject('Nenhum planeta encontrado!')
+                }
             })
+        })
     },
 
     async findAllPlanet(param){
@@ -39,7 +48,7 @@ module.exports = {
                     throw 'Nenhum planeta encontrado para a sua busca!'
                 }
             }).catch(error => {
-                throw "Erro: " +error
+                throw error
             })
     },
 

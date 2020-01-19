@@ -6,4 +6,9 @@ module.exports = {
             useUnifiedTopology: true 
         }
     },
+
+    limit: {
+        items: 10,
+        page: 0
+    }
 };

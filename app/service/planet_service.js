@@ -2,6 +2,7 @@ const findPlanetAxios = require('../service/axios_service')
 const mongoose = require('mongoose')
 const Planet = mongoose.model('Planet');
 const repository = require('../repository/planet_repository')
+const config = require('../config/dataBase')
 
 module.exports = { 
     async searchPlanetSwapi(planet){
@@ -20,10 +21,10 @@ module.exports = {
             let query = {}
             let foundPlanet = {}
 
-            if(planet.name)
-                query = { name : {$regex: `.*${planet.name}.*`} }
+            if(planet.planetId)
+                query = { planetId : planet.planetId }
             else
-                query = { planetId : planet.idPlanet }
+                query = { name : {$regex: `.*${planet.name}.*`} }
 
             return foundPlanet = await repository.findPlanet(query)
         
@@ -35,7 +36,7 @@ module.exports = {
     async findAndRemovePlanet(planet){
         try {
             let foundPlanet = {}
-            let query  = { planetId : planet.idPlanet }
+            let query  = { planetId : planet.planetId }
             return foundPlanet = await repository.findAndRemovePlanet(query)
         } catch (error) {
             throw error
@@ -47,9 +48,13 @@ module.exports = {
             let param = {}
             let foundAllPlanet =  {}
             
-            param.page = parseInt(params.page)
-            param.limit = 10
-            param.skip = param.page * param.limit
+
+            if(params.name){
+                param.query = { name : {$regex: `.*${params.name}.*`} }
+            }
+
+            param.page = parseInt(params.page) ? parseInt(params.page): config.limit.page
+            param.skip = params.page * config.limit.items
 
             return foundAllPlanet = await repository.findAllPlanet(param)
         } catch (error) {
@@ -57,29 +62,20 @@ module.exports = {
         }
     },
 
-    async removePlanet(idPlanet){
-        try {
-            let query = { planetId : idPlanet }
-            return foundAllPlanet = await repository.removePlanet(query)
-        } catch (error) {
-            throw error
-        }
-    },
-
-    update(update, body){
+    buildUpdate(update, body){
         let queryUpdate = {}
-        if(update.nome != body.nome){
-            queryUpdate.nome = update.nome
+        if(body.name && update.name != body.name){
+            queryUpdate.name = body.name
         }
 
-        if(update.terrain != body.terrain){
-            queryUpdate.terrain = update.terrain
+        if(body.terrain && update.terrain != body.terrain){
+            queryUpdate.terrain = body.terrain
         }
-        if(update.climate != body.climate){
-            queryUpdate.climate = update.climate
+        if(body.climate && update.climate != body.climate){
+            queryUpdate.climate = body.climate
         }
-        if(update.qtdAparicoesEmFilmes != body.qtdAparicoesEmFilmes){
-            queryUpdate.qtdAparicoesEmFilmes = update.qtdAparicoesEmFilmes
+        if(body.films && update.films != body.films){
+            queryUpdate.films = body.films
         }
         queryUpdate.planetId = update.planetId
         return queryUpdate
@@ -98,7 +94,15 @@ module.exports = {
 
     validateBody(body){
         if(!body.name || !body.climate || !body.terrain || !body.films) 
-            throw res.status(400).send({message: "Todos os campos: nome, clima, terreno, qtdAparicoesEmFilmes são obrigatórios"})
+            throw "Todos os campos: nome, clima, terreno, qtdAparicoesEmFilmes são obrigatórios"
 
+    },
+
+    validateUpdateBody(body){
+        if(!body.planetId)
+            throw "Id do planeta é obrigatório!"
+        
+        if(!body.name && !body.climate && !body.terrain && !body.films) 
+            throw "Ao menos um dos os campos: nome, clima, terreno, qtdAparicoesEmFilmes e obrigatório"
     }
 }

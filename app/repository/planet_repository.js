@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Planet = mongoose.model('Planet');
+const config = require('../config/dataBase')
 
 module.exports = {
     async savePlanet(planet){
@@ -39,30 +40,17 @@ module.exports = {
     },
 
     async findAllPlanet(param){
-        return await Planet.find( () => {
-            }).limit(param.limit).skip(param.skip)
+        return await Planet.find(param.query, () => {
+            }).limit(config.limit.items).skip(param.skip)
             .then( res => {
-                if(res.length){
                     return res
-                }else{
-                    throw 'Nenhum planeta encontrado para a sua busca!'
-                }
             }).catch(error => {
                 throw error
             })
     },
-
-    async removePlanet(query){
-        return await Planet.deleteOne(query, () => {
-            }).then( response => {
-                return response
-            }).catch(error => {
-                throw "Erro: " +error
-            })
-    },
     
-    async updatePlanet(query, setUpdate){
-        return await Planet.update(query, { $set: setUpdate }, () => {
+    async updatePlanet(setUpdate){
+        return await Planet.update( { planetId : setUpdate.planetId }, { $set: setUpdate }, () => {
             }).then( response => {
                 return response
             }).catch(error => {

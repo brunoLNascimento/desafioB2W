@@ -5,9 +5,9 @@ const repository = require('../repository/planet_repository')
 exports.findPlanetByName = async function (req, res){
     try {
         let planetName = req.params
-        let foundPlanet = await planetService.findPlanet(planetName)
+        let foundPlanet = await planetService.findAllPlanet(planetName)
 
-        if(foundPlanet){
+        if(foundPlanet.length){
             return res.status(200).send({
                 message: 'Planeta encontrado na base de dados',
                 planet: foundPlanet
@@ -27,6 +27,11 @@ exports.findPlanetByName = async function (req, res){
 exports.findALLPlanet = async function (req, res){
     try {
         let planets = await planetService.findAllPlanet(req.params)
+
+        if(!planets.length){
+            throw "Nenhum planeta encontrado para a busca!"
+        }
+
         return res.status(200).send(
             {message: "Planetas encontrados: " +planets.length, 
             planet: planets
@@ -59,15 +64,15 @@ exports.savePlanet = async function (req, res){
         let foundPlanet = await planetService.findPlanet(req.body)
 
         if(foundPlanet){
-            return res.status(200).send({
+            return res.status(400).send({
                 message: 'Planeta já cadastrado',
                 planet: foundPlanet
             })
         }
 
         let planet = planetService.buildModel(req.body)
-        await repository.savePlanet(planet)
-        return res.status(200).send({message: "Planeta " +planet.name+ " criado com sucesso!"})
+        let planetSaved = await repository.savePlanet(planet)
+        return res.status(200).send({message: "Planeta " +planetSaved.name+ " criado com sucesso, seu ID: " +planetSaved.planetId})
     } catch (error) {
         return res.status(400).send({message: error})        
     }
@@ -86,14 +91,14 @@ exports.removePlanet = async function (req, res){
 exports.updatePlanet = async function (req, res){
     try {
         let body = req.body
-        let planets = await planetService.findPlanet(body.planetId)
-        let planetUpdated = planetService.update(planets, body)
-        let planet = planetService.buildModel(planetUpdated)
-        await repository.updatePlanet(planet)
-        return res.status(200).send({
-            message: "Planeta atualizado com sucesso", 
-            planet: planet
-        })
+        planetService.validateUpdateBody(body)
+        let planets = await planetService.findPlanet(body)
+        if(!planets){
+            throw "Nenhum planeta encontrado"
+        }
+        let planetToUpdated = planetService.buildUpdate(planets, body)
+        await repository.updatePlanet(planetToUpdated)
+        return res.status(200).send({ message: "Planeta atualizado com sucesso" })
     } catch (error) {
         return res.status(400).send({message: error})        
     }

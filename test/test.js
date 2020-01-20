@@ -36,8 +36,10 @@ const invalidPlanet = {
 
 
 describe( 'Testando api de planetas', () => {
-    mongoose.connect(config.db.uri)
-  
+    let db = mongoose.connect(config.db.uri)
+    setTimeout( function () {
+        db.close()
+      }, 2000);
 
     it('#Criando um novo planeta, sem passar os parametros', done => {
     request(app)
@@ -145,6 +147,4 @@ describe( 'Testando api de planetas', () => {
             .timeout(2000)
             .end(done);
     });
-},  setTimeout( function () {
-    mongoose.disconnect()
-  }, 2000))
+})

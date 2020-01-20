@@ -81,7 +81,7 @@ exports.savePlanet = async function (req, res){
 exports.removePlanet = async function (req, res){
     try {
         let planet = req.params
-        let deleted = await planetService.findAndRemovePlanet(planet)
+        await planetService.findAndRemovePlanet(planet)
         return res.status(200).send({message: "Planeta apagado com sucesso!"})
     } catch (error) {
         return res.status(400).send({message: error})        

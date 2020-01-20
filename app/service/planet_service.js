@@ -36,7 +36,12 @@ module.exports = {
     async findAndRemovePlanet(planet){
         try {
             let foundPlanet = {}
-            let query  = { planetId : planet.planetId }
+            let query = {}
+            
+            if(planet.planetId)
+                query = { planetId : planet.planetId }
+            else
+                query = { name : {$regex: `.*${planet.name}.*`} }
             return foundPlanet = await repository.findAndRemovePlanet(query)
         } catch (error) {
             throw error

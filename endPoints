@@ -1,0 +1,77 @@
+1) Buscar planeta pelo nome 
+    server.get('/find/:name/', planet.findPlanetByName)
+    localhost:3003/find/Tatooine
+
+    obs: nessa busca, ao consultar localhost:3003/find/Tatooine, a aplicação fará uma busca na base de dados, 
+        caso não encontre, o sistema irá na aplicação SWAPI e buscará pelo planeta. Caso o planeta seja encontrado,
+        o sistema salvará na base de dados o planeta (1), ao consultar novamente o mesmo planeta o sistema encontrará 
+        o planeta na base e retornará o resultado (1.1).
+        Caso o planeta consultado não seja encontrado na base e nem no SWAPI, deverá retornar a mensagem: "Nenhum planeta: nome do planeta, foi encontrado!"
+
+1.1) 
+{
+    "message": "Planeta encontrado no Swapi e salvo na Base",
+    "planet": {
+        "name": "Saleucami",
+        "climate": "hot",
+        "terrain": "caves, desert, mountains, volcanoes",
+        "films": 1,
+        "planetId": 103
+    }
+}
+
+1.2)
+{
+    "message": "Planeta encontrado na base de dados",
+    "planet": {
+        "name": "Saleucami",
+        "climate": "hot",
+        "terrain": "caves, desert, mountains, volcanoes",
+        "films": 1,
+        "planetId": 103
+    }
+}
+
+2) Buscar todos os planetas
+    server.get('/findAll/:page/:name?', planet.findALLPlanet)
+    localhost:3003/findAll/0/ = 0 representa a página que será feita a busca de todos os planetas salvos na base
+    localhost:3003/findAll/0/Saleucami = Temos a opção de buscar todos os planetas por página e por nome
+    localhost:3003/findAll/0/S = Ou por partes do nome
+
+3) Buscar planeta por ID
+	server.get('/findById/:planetId', planet.findPlanetById)
+    localhost:3003/findById/103 = Busca feita na base que deverá retornar (1.2)
+
+4) Salvar Planeta
+    server.post('/planet', planet.savePlanet)
+    localhost:3003/planet
+
+
+    {
+        "terrain": "rochosos, vales e vulcões",
+	    "climate": "quente",
+	    "films": 1,
+	    "name": "Marte"
+    }
+
+    retorno: 
+    {
+        "message": "Planeta Marte criado com sucesso, seu ID: 104"
+    }
+
+5) Deletar um planeta
+    server.delete('/planet/:planet', planet.removePlanet)
+    localhost:3003/planet/104 =  Deletar um planeta pelo ID
+    localhost:3003/planet/Saleucami = ou pelo nome do planeta, neste o nome tem que ser igual ao da base de dados
+
+    obs: a exclusão é física
+
+6) Atualizar um planeta
+    server.put('/planet/', planet.updatePlanet)
+    localhost:3003/planet = Para atualizar um dos campos ou todos os campos "name", "climate", "terrain" e/ou "films" é obrigatório enviar o id do planeta, 
+                            neste exemplo, atualizaremos a quantidade de participações em filme do planeta.
+
+    {
+	    "films": 8,
+	    "planetId": 103
+	}

@@ -22,6 +22,8 @@ Terreno
 Linguagem utilizada: NodeJs
 Bancos Utilizado: MongoDB
 Teste Unitário: Mocha e Supertest
+
+Favor ler o arquivo endPoints
   
 ### Rodando o sistema
 

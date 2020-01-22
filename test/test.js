@@ -47,7 +47,8 @@ describe( 'Testando api de planetas', () => {
         .send()
         .expect('Content-Type',/json/)
         .timeout(2000)
-        .end(done, console.log(done))
+        .expect(400)
+        .end(done)
     });
 
     it('#Criando um novo planeta', done => {
@@ -55,22 +56,16 @@ describe( 'Testando api de planetas', () => {
             .post(`/planet`)
             .send(planetMakemake)
             .expect('Content-Type',/json/)
+            .expect(200)
             .timeout(2000)
             .end(done)
     });
 
-
-    it('#Consultando planeta pelo id', done => {
-        request(app)
-            .get(`/findById/${planetToUpdate.planetId}`)
-            .timeout(2000)
-            .end(done);
-    });
-
     it('#Consultando planeta pelo nome', done => {
         request(app)
-            .get(`/find/${planetToUpdate.name}`)
+            .get(`/find/${planetMakemake.name}`)
             .timeout(2000)
+            .expect(200)
             .end(done);
     });
 
@@ -78,6 +73,7 @@ describe( 'Testando api de planetas', () => {
         request(app)
             .get(`/find/${invalidPlanet.name}`)
             .timeout(2000)
+            .expect(500)
             .end(done);
     });
 
@@ -85,6 +81,7 @@ describe( 'Testando api de planetas', () => {
         request(app)
             .get(`/findById/${invalidPlanet.planetId}`)
             .timeout(2000)
+            .expect(400)
             .end(done);
     });
 
@@ -92,6 +89,7 @@ describe( 'Testando api de planetas', () => {
         request(app)
             .get(`/findAll/${invalidPlanet.page}`)
             .timeout(2000)
+            .expect(200)
             .end(done);
     });
 
@@ -99,52 +97,32 @@ describe( 'Testando api de planetas', () => {
         request(app)
             .get(`/findAll/${invalidPlanet.invalidPage}`)
             .timeout(2000)
+            .expect(206)
             .end(done);
     });
-
-    it('#Consultando todos os planetas que contem a letra A', done => {
-        request(app)
-            .get(`/findAll/A`)
-            .timeout(2000)
-            .end(done);
-    });
-
-    it('#Alterando Clima e quantidades de participações do filme', done => {
-        request(app)
-            .put(`/planet`)
-            .send(planetUpdateClimateAndFilms)
-            .timeout(2000)
-            .end(done)
-    });
-
-    it('#Alterando nome do Planeta', done => {
-        request(app)
-            .put(`/planet`)
-            .send(planetToUpdate)
-            .timeout(2000)
-            .end(done)
-    });
-
 
     it('#Tentando criar um planeta já existente', done => {
         request(app)
             .post(`/planet`)
             .send(planetToUpdate.name)
             .timeout(2000)
+            .expect(400)
             .end(done)
     });
 
     it('#Removendo um planeta', done => {
         request(app)
-            .delete(`/planetName/${planetMakemake.name}`)
+            .delete(`/planet/${planetMakemake.name}`)
             .timeout(4000)
+            .expect(200)
             .end(done);
     });
 
     it('#Tentando Remover um planeta com id inválido', done => {
         request(app)
-            .delete(`/planetName/${planetMakemake.name}`)
+            .delete(`/planet/${planetMakemake.name}`)
             .timeout(2000)
+            .expect(400)
             .end(done);
     });
 })

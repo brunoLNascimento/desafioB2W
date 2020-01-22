@@ -33,15 +33,17 @@ module.exports = {
         }
     },
 
-    async findAndRemovePlanet(planet){
+    async findAndRemovePlanet(param){
         try {
             let foundPlanet = {}
             let query = {}
-            
-            if(planet.planetId)
-                query = { planetId : planet.planetId }
-            else
-                query = { name : {$regex: `.*${planet.name}.*`} }
+
+            if(isNaN(param.planet)){
+                query = { name : param.planet }
+            }else{
+                query = { planetId : param.planet }
+            }
+
             return foundPlanet = await repository.findAndRemovePlanet(query)
         } catch (error) {
             throw error
@@ -52,14 +54,18 @@ module.exports = {
         try {
             let param = {}
             let foundAllPlanet =  {}
-            
+            param.page = parseInt(params.page)
+
+            if(isNaN(param.page)){
+                throw 'Página deve ser númerico'
+            }
 
             if(params.name){
                 param.query = { name : {$regex: `.*${params.name}.*`} }
             }
 
             param.page = parseInt(params.page) ? parseInt(params.page): config.limit.page
-            param.skip = params.page * config.limit.items
+            param.skip = param.page * config.limit.items
 
             return foundAllPlanet = await repository.findAllPlanet(param)
         } catch (error) {

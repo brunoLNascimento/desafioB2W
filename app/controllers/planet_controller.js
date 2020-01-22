@@ -5,9 +5,9 @@ const repository = require('../repository/planet_repository')
 exports.findPlanetByName = async function (req, res){
     try {
         let planetName = req.params
-        let foundPlanet = await planetService.findAllPlanet(planetName)
+        let foundPlanet = await planetService.findPlanet(planetName)
 
-        if(foundPlanet.length){
+        if(foundPlanet){
             return res.status(200).send({
                 message: 'Planeta encontrado na base de dados',
                 planet: foundPlanet

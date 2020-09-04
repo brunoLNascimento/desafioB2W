@@ -29,7 +29,7 @@
     "mocha": "^5.2.0",
     "mongo": "^0.1.0",
     "mongod": "^2.0.0",
-    "mongodb": "^2.2.36",
+    "mongodb": "^3.1.13",
     "mongoose": "^5.4.7",
     "mongoose-sequence": "^5.2.2",
     "q": "1.4.1",

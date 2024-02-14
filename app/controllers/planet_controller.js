@@ -2,7 +2,7 @@ const planetService = require('../service/planet_service')
 const repository = require('../repository/planet_repository')
 
 
-exports.findPlanetByName = async function (req, res){
+exports.findPlanetByName = async function (req, res){  
     try {
         let planetName = req.params
         let foundPlanet = await planetService.findPlanet(planetName)
